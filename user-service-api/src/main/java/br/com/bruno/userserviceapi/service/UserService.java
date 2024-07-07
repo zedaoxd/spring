@@ -2,6 +2,7 @@ package br.com.bruno.userserviceapi.service;
 
 import models.requests.UpdateUserRequest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.bruno.userserviceapi.entity.User;
@@ -18,41 +19,49 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserRepository repository;
+    private final UserMapper mapper;
+    private final BCryptPasswordEncoder encoder;
 
     public UserResponse findById(String id) {
-        return userMapper.fromEntity(find(id));
+        return mapper.fromEntity(find(id));
     }
 
     public void save(CreateUserRequest request) {
         verifyIfEmailExists(request.email(), null);
-        final User user = userMapper.toRequest(request);
-        userRepository.save(user);
+        final User user = mapper
+                .toRequest(request)
+                .withPassword(encoder.encode(request.password()));
+        repository.save(user);
     }
 
     public List<UserResponse> findAll() {
-        return userRepository.findAll()
+        return repository.findAll()
                 .stream()
-                .map(userMapper::fromEntity)
+                .map(mapper::fromEntity)
                 .toList();
     }
 
-    public UserResponse update(final String id, final UpdateUserRequest updateUserRequest) {
+    public UserResponse update(final String id, final UpdateUserRequest request) {
         final User entity = find(id);
-        verifyIfEmailExists(updateUserRequest.email(), id);
-        return userMapper.fromEntity(userRepository.save(userMapper.update(updateUserRequest, entity)));
+        verifyIfEmailExists(request.email(), id);
+        return mapper.fromEntity(
+                repository.save(
+                        mapper.update(request, entity)
+                                .withPassword(request.password() != null ? encoder.encode(request.password()) : entity.getPassword())
+                )
+        );
     }
 
     private User find(final String id) {
-        return userRepository.findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Object not found. Id: " + id + ", Type: " + User.class.getSimpleName()
                 ));
     }
 
     private void verifyIfEmailExists(final String email, final String id) {
-        userRepository.findByEmail(email)
+        repository.findByEmail(email)
                 .ifPresent(user -> {
                     if (!user.getId().equals(id)) {
                         throw new DataIntegrityViolationException("Email [ " + email + " ] already exists");
