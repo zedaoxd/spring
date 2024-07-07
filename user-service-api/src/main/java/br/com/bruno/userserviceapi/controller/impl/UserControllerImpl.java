@@ -2,6 +2,7 @@ package br.com.bruno.userserviceapi.controller.impl;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +24,9 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<Void> save(final CreateUserRequest request) {
-        userService.save(request);
+    public ResponseEntity<Void> save(@Valid final CreateUserRequest createUserRequest) {
+        userService.save(createUserRequest);
         return ResponseEntity.status(CREATED.value())
-            .build();
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package br.com.bruno.userserviceapi.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.bruno.userserviceapi.entity.User;
@@ -26,8 +27,17 @@ public class UserService {
     }
 
     public void save(CreateUserRequest request) {
+        verifyIfEmailExists(request.email(), null);
         final User user = userMapper.toRequest(request);
         userRepository.save(user);
     }
 
+    private void verifyIfEmailExists(final String email, final String id) {
+        userRepository.findByEmail(email)
+            .ifPresent(user -> {
+                if (!user.getId().equals(id)) {
+                    throw new DataIntegrityViolationException("Email [ " + email + " ] already exists");
+                }
+            });
+    }
 }
