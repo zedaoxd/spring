@@ -16,16 +16,17 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    ResponseEntity<StandardError> handleResourceNotFoundException(ResourceNotFoundException ex, final HttpServletRequest request) {
+    ResponseEntity<StandardError> handleResourceNotFoundException(
+            ResourceNotFoundException ex,
+            final HttpServletRequest request) {
         return ResponseEntity
-            .status(NOT_FOUND)
-            .body(StandardError.builder()
-                    .timestamp(LocalDateTime.now())
-                    .status(NOT_FOUND.value())
-                    .error(NOT_FOUND.getReasonPhrase())
-                    .message(ex.getMessage())
-                    .path(request.getRequestURI())
-                    .build()
-            );
+                .status(NOT_FOUND)
+                .body(StandardError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(NOT_FOUND.value())
+                        .error(NOT_FOUND.getReasonPhrase())
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
     }
 }
