@@ -11,6 +11,8 @@ import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateUserRequest;
 import models.responses.UserResponse;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -20,9 +22,9 @@ public class UserService {
 
     public UserResponse findById(String id) {
         final User user = userRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(
-                "Object not found. Id: " + id + ", Type: " + UserResponse.class.getSimpleName()
-            ));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Object not found. Id: " + id + ", Type: " + UserResponse.class.getSimpleName()
+                ));
         return userMapper.fromEntity(user);
     }
 
@@ -34,10 +36,17 @@ public class UserService {
 
     private void verifyIfEmailExists(final String email, final String id) {
         userRepository.findByEmail(email)
-            .ifPresent(user -> {
-                if (!user.getId().equals(id)) {
-                    throw new DataIntegrityViolationException("Email [ " + email + " ] already exists");
-                }
-            });
+                .ifPresent(user -> {
+                    if (!user.getId().equals(id)) {
+                        throw new DataIntegrityViolationException("Email [ " + email + " ] already exists");
+                    }
+                });
+    }
+
+    public List<UserResponse> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::fromEntity)
+                .toList();
     }
 }

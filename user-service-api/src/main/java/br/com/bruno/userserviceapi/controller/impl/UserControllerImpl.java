@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import models.requests.CreateUserRequest;
 import models.responses.UserResponse;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
@@ -28,5 +30,10 @@ public class UserControllerImpl implements UserController {
         userService.save(createUserRequest);
         return ResponseEntity.status(CREATED.value())
                 .build();
+    }
+
+    @Override
+    public ResponseEntity<List<UserResponse>> findAll() {
+        return ResponseEntity.ok(userService.findAll());
     }
 }
