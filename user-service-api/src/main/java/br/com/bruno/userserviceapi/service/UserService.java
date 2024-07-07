@@ -7,6 +7,7 @@ import br.com.bruno.userserviceapi.mapper.UserMapper;
 import br.com.bruno.userserviceapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import models.exceptions.ResourceNotFoundException;
+import models.requests.CreateUserRequest;
 import models.responses.UserResponse;
 
 @Service
@@ -22,6 +23,11 @@ public class UserService {
                 "Object not found. Id: " + id + ", Type: " + UserResponse.class.getSimpleName()
             ));
         return userMapper.fromEntity(user);
+    }
+
+    public void save(CreateUserRequest request) {
+        final User user = userMapper.toRequest(request);
+        userRepository.save(user);
     }
 
 }
