@@ -6,6 +6,7 @@ models\exceptions\ValidationException$ValidationExceptionBuilder.class
 models\exceptions\ValidationException$ValidationExceptionBuilderImpl.class
 models\exceptions\ResourceNotFoundException.class
 models\exceptions\StandardError$StandardErrorBuilder.class
+models\requests\UpdateUserRequest.class
 models\exceptions\ValidationException.class
 models\exceptions\ValidationException$FieldError.class
 models\responses\UserResponse.class

@@ -1,5 +1,6 @@
 package br.com.bruno.userserviceapi.service;
 
+import models.requests.UpdateUserRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +22,33 @@ public class UserService {
     private final UserMapper userMapper;
 
     public UserResponse findById(String id) {
-        final User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Object not found. Id: " + id + ", Type: " + UserResponse.class.getSimpleName()
-                ));
-        return userMapper.fromEntity(user);
+        return userMapper.fromEntity(find(id));
     }
 
     public void save(CreateUserRequest request) {
         verifyIfEmailExists(request.email(), null);
         final User user = userMapper.toRequest(request);
         userRepository.save(user);
+    }
+
+    public List<UserResponse> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::fromEntity)
+                .toList();
+    }
+
+    public UserResponse update(final String id, final UpdateUserRequest updateUserRequest) {
+        final User entity = find(id);
+        verifyIfEmailExists(updateUserRequest.email(), id);
+        return userMapper.fromEntity(userRepository.save(userMapper.update(updateUserRequest, entity)));
+    }
+
+    private User find(final String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Object not found. Id: " + id + ", Type: " + User.class.getSimpleName()
+                ));
     }
 
     private void verifyIfEmailExists(final String email, final String id) {
@@ -41,12 +58,5 @@ public class UserService {
                         throw new DataIntegrityViolationException("Email [ " + email + " ] already exists");
                     }
                 });
-    }
-
-    public List<UserResponse> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(userMapper::fromEntity)
-                .toList();
     }
 }
