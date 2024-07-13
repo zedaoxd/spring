@@ -42,15 +42,21 @@ public class UserService {
                 .toList();
     }
 
-    public UserResponse update(final String id, final UpdateUserRequest request) {
+    public UserResponse update(final String id, final UpdateUserRequest updateUserRequest) {
+        verifyIfEmailExists(updateUserRequest.email(), id);
         final User entity = find(id);
-        verifyIfEmailExists(request.email(), id);
         return mapper.fromEntity(
                 repository.save(
-                        mapper.update(request, entity)
-                                .withPassword(request.password() != null ? encoder.encode(request.password()) : entity.getPassword())
+                        mapper.update(updateUserRequest, entity)
+                                .withPassword(getPassword(updateUserRequest, entity))
                 )
         );
+    }
+
+    private String getPassword(UpdateUserRequest updateUserRequest, User entity) {
+        return updateUserRequest.password() != null
+                ? encoder.encode(updateUserRequest.password())
+                : entity.getPassword();
     }
 
     private User find(final String id) {
