@@ -30,7 +30,7 @@ public class UserService {
     public void save(CreateUserRequest request) {
         verifyIfEmailExists(request.email(), null);
         final User user = mapper
-                .toRequest(request)
+                .fromRequest(request)
                 .withPassword(encoder.encode(request.password()));
         repository.save(user);
     }

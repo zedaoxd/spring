@@ -27,7 +27,7 @@ public interface UserMapper {
     @Mapping(target = "withId", ignore = true)
     @Mapping(target = "withEmail", ignore = true)
     @Mapping(target = "id", ignore = true)
-    User toRequest(CreateUserRequest request);
+    User fromRequest(CreateUserRequest request);
 
     @Mapping(target = "withProfiles", ignore = true)
     @Mapping(target = "withPassword", ignore = true)
