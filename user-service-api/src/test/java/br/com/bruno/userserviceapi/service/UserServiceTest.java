@@ -3,6 +3,7 @@ package br.com.bruno.userserviceapi.service;
 import br.com.bruno.userserviceapi.entity.User;
 import br.com.bruno.userserviceapi.mapper.UserMapper;
 import br.com.bruno.userserviceapi.repository.UserRepository;
+import models.exceptions.ResourceNotFoundException;
 import models.responses.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,5 +53,14 @@ class UserServiceTest {
         assertEquals(UserResponse.class, response.getClass());
         verify(userRepository, times(1)).findById(anyString());
         verify(userMapper, times(1)).fromEntity(any(User.class));
+    }
+
+    @Test
+    void whenCallFindByIdWithInvalidIdThenThrowResourceNotFoundException() {
+        when(userRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> userService.findById(id));
+        verify(userRepository, times(1)).findById(anyString());
+        verify(userMapper, never()).fromEntity(any(User.class));
     }
 }
