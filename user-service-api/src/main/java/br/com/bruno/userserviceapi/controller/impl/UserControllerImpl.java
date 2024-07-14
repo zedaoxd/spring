@@ -2,7 +2,6 @@ package br.com.bruno.userserviceapi.controller.impl;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-import jakarta.validation.Valid;
 import models.requests.UpdateUserRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
