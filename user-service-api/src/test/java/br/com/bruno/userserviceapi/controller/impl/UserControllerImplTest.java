@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static br.com.bruno.userserviceapi.creator.CreatorUtils.generateMock;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,7 +50,19 @@ class UserControllerImplTest {
                 .andExpect(jsonPath("$.id").value(entity.getId()))
                 .andExpect(jsonPath("$.name").value(entity.getName()))
                 .andExpect(jsonPath("$.email").value(entity.getEmail()))
-                .andExpect(jsonPath(("$.profiles")).isArray());
+                .andExpect(jsonPath("$.profiles").isArray());
+    }
+
+    @Test
+    void testFindByIsWithFailure() throws Exception {
+        var id = "invalid-id";
+        mockMvc.perform(get("/users/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Object not found. Id: " + id + ", Type: " + User.class.getSimpleName()))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.status").value(NOT_FOUND.value()))
+                .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()))
+                .andExpect(jsonPath("$.path").value("/users/" + id));
     }
 
 }
