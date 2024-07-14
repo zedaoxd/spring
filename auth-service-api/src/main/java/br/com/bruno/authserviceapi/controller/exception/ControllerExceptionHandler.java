@@ -1,16 +1,15 @@
-package br.com.bruno.userserviceapi.controller.exceptions;
+package br.com.bruno.authserviceapi.controller.exception;
 
 import models.exceptions.StandardError;
 import models.exceptions.ValidationException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
-import models.exceptions.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,17 +19,17 @@ import static org.springframework.http.HttpStatus.*;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler(BadCredentialsException.class)
     ResponseEntity<StandardError> handleResourceNotFoundException(
-            ResourceNotFoundException ex,
+            BadCredentialsException ex,
             final HttpServletRequest request
     ) {
         return ResponseEntity
-                .status(NOT_FOUND)
+                .status(UNAUTHORIZED)
                 .body(StandardError.builder()
                         .timestamp(LocalDateTime.now())
-                        .status(NOT_FOUND.value())
-                        .error(NOT_FOUND.getReasonPhrase())
+                        .status(UNAUTHORIZED.value())
+                        .error(UNAUTHORIZED.getReasonPhrase())
                         .message(ex.getMessage())
                         .path(request.getRequestURI())
                         .build());
@@ -57,21 +56,5 @@ public class ControllerExceptionHandler {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(error);
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    ResponseEntity<StandardError> handleDataIntegrityViolationException(
-            DataIntegrityViolationException ex,
-            final HttpServletRequest request
-    ) {
-        return ResponseEntity
-                .status(CONFLICT)
-                .body(StandardError.builder()
-                        .timestamp(LocalDateTime.now())
-                        .status(CONFLICT.value())
-                        .error(CONFLICT.getReasonPhrase())
-                        .message(ex.getMessage())
-                        .path(request.getRequestURI())
-                        .build());
     }
 }

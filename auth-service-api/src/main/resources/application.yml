@@ -1,5 +1,13 @@
 spring:
   application:
     name: 'auth-service-api'
+  data:
+    mongodb:
+      uri: 'mongodb+srv://brunolessamaxx28:rS1oDcvbkHZTxoFC@clusterhelpdesk.49ouwoh.mongodb.net/helpdeskdb?retryWrites=true&w=majority&appName=ClusterHelpDesk'
+      auto-index-creation: true
 server:
-  port: 8081
+  port: 8080
+
+jwt:
+  secret: 'FA247Wfd05S2PZ1Ecn332AA/lFcDKmOoByaCX6R9qsATqEtvq/PRQGdKz72yjtph7Dy4JglqvIsDzg9x8RY/hxjfTd3iPFrpMeA/qy8uEbw='
+  expiration: 120000
