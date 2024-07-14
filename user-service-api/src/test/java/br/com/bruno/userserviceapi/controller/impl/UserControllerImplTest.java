@@ -20,8 +20,7 @@ import java.util.List;
 
 import static br.com.bruno.userserviceapi.creator.CreatorUtils.generateMock;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -118,9 +117,26 @@ class UserControllerImplTest {
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
                 .andExpect(jsonPath("$.status").value(CONFLICT.value()))
                 .andExpect(jsonPath("$.error").value(CONFLICT.getReasonPhrase()))
-                .andExpect(jsonPath("$.path").value("/users"));
+                .andExpect(jsonPath("$.path").value(ENDPOINT_USERS));
 
         userRepository.deleteByEmail(VALID_EMAIL);
+    }
+
+    @Test
+    void testSaveWithNameEmptyThenReturnBadRequest() throws Exception {
+        final var createUserRequest = generateMock(User.class).withName("").withEmail(VALID_EMAIL);
+
+        mockMvc.perform(post(ENDPOINT_USERS)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(createUserRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Validation error"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.error").value(BAD_REQUEST.getReasonPhrase()))
+                .andExpect(jsonPath("$.path").value(ENDPOINT_USERS))
+                .andExpect(jsonPath("$.errors[?(@.fieldName=='name' && @.message=='Name is required')]").exists())
+                .andExpect(jsonPath("$.errors[?(@.fieldName=='name' && @.message=='Name must be between 3 and 50 characters')]").exists());
     }
 
     private String toJson(final Object object) throws JsonProcessingException {
