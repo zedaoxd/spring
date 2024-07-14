@@ -12,6 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static br.com.bruno.userserviceapi.creator.CreatorUtils.generateMock;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -31,16 +34,20 @@ class UserControllerImplTest {
     private UserRepository userRepository;
 
     private User entity;
+    private List<User> entities;
 
     @BeforeEach
     void setUp() {
-        var newEntity = generateMock(User.class);
-        entity = userRepository.save(newEntity);
+        var newEntity1 = generateMock(User.class);
+        var newEntity2 = generateMock(User.class);
+
+        entities = userRepository.saveAll(List.of(newEntity1, newEntity2));
+        entity = entities.get(0);
     }
 
     @AfterEach
     void tearDown() {
-        userRepository.delete(entity);
+        userRepository.deleteAll(entities);
     }
 
     @Test
@@ -63,6 +70,17 @@ class UserControllerImplTest {
                 .andExpect(jsonPath("$.status").value(NOT_FOUND.value()))
                 .andExpect(jsonPath("$.error").value(NOT_FOUND.getReasonPhrase()))
                 .andExpect(jsonPath("$.path").value("/users/" + id));
+    }
+
+    @Test
+    void testFindAllWithSuccess() throws Exception {
+        mockMvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0]").isNotEmpty())
+                .andExpect(jsonPath("$[1]").isNotEmpty())
+                .andExpect(jsonPath("$[0].profiles").isArray())
+                .andExpect(jsonPath("$[1].profiles").isArray());
     }
 
 }
