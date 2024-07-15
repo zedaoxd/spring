@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: 'config-server'
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${CONFIG_REPO_URI}
+          default-label: master
+          username: ${CONFIG_REPO_USERNAME}
+          password: ${CONFIG_REPO_PASSWORD}
+server:
+  port: ${SERVER_PORT:8888}
