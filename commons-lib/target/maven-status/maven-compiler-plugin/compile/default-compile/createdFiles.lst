@@ -2,6 +2,7 @@ models\responses\AuthenticateResponse$AuthenticateResponseBuilder.class
 models\requests\CreateUserRequest.class
 models\exceptions\ValidationException$ValidationExceptionBuilder.class
 models\responses\RefreshTokenResponse.class
+models\enums\OrderStatusEnum.class
 models\requests\AuthenticateRequest.class
 models\exceptions\StandardError$StandardErrorBuilder.class
 models\exceptions\ValidationException$FieldError.class
