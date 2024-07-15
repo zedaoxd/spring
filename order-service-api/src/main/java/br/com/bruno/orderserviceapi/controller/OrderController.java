@@ -11,6 +11,7 @@ import models.exceptions.StandardError;
 import models.requests.CreateOrderRequest;
 import models.responses.OrderResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -53,5 +54,6 @@ public interface OrderController {
                     )
             )
     })
+    @PostMapping
     ResponseEntity<Void> createOrder(@Valid @RequestBody final CreateOrderRequest createOrderRequest);
 }
