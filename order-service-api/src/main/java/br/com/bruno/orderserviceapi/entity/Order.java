@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import models.enums.OrderStatusEnum;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -40,6 +41,10 @@ public class Order implements Serializable {
     @Column(nullable = false, length = 3000)
     private String description;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatusEnum status;
+
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
@@ -52,6 +57,7 @@ public class Order implements Serializable {
     @PrePersist
     public void prePersist() {
         this.createdAt = now();
+        this.status = OrderStatusEnum.OPEN;
     }
 
     @PreUpdate
