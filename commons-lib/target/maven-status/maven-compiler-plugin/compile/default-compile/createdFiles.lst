@@ -1,10 +1,12 @@
 models\responses\AuthenticateResponse$AuthenticateResponseBuilder.class
 models\requests\CreateUserRequest.class
 models\exceptions\ValidationException$ValidationExceptionBuilder.class
+models\responses\RefreshTokenResponse.class
 models\requests\AuthenticateRequest.class
 models\exceptions\StandardError$StandardErrorBuilder.class
 models\exceptions\ValidationException$FieldError.class
 models\responses\UserResponse.class
+models\requests\RefreshTokenRequest.class
 models\enums\ProfileEnum.class
 models\exceptions\StandardError.class
 models\exceptions\StandardError$StandardErrorBuilderImpl.class
@@ -13,3 +15,4 @@ models\exceptions\ValidationException$ValidationExceptionBuilderImpl.class
 models\exceptions\ResourceNotFoundException.class
 models\requests\UpdateUserRequest.class
 models\exceptions\ValidationException.class
+models\exceptions\RefreshTokenExpired.class

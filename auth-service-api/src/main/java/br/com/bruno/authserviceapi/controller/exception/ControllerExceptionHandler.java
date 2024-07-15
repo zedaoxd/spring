@@ -1,5 +1,7 @@
 package br.com.bruno.authserviceapi.controller.exception;
 
+import models.exceptions.RefreshTokenExpired;
+import models.exceptions.ResourceNotFoundException;
 import models.exceptions.StandardError;
 import models.exceptions.ValidationException;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,9 @@ import static org.springframework.http.HttpStatus.*;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler(BadCredentialsException.class)
-    ResponseEntity<StandardError> handleResourceNotFoundException(
-            BadCredentialsException ex,
+    @ExceptionHandler({ BadCredentialsException.class, RefreshTokenExpired.class })
+    ResponseEntity<StandardError> handleBadCredentialsException(
+            RuntimeException ex,
             final HttpServletRequest request
     ) {
         return ResponseEntity
@@ -30,6 +32,22 @@ public class ControllerExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .status(UNAUTHORIZED.value())
                         .error(UNAUTHORIZED.getReasonPhrase())
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    ResponseEntity<StandardError> handleResourceNotFoundException(
+            ResourceNotFoundException ex,
+            final HttpServletRequest request
+    ) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(StandardError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(NOT_FOUND.value())
+                        .error(NOT_FOUND.getReasonPhrase())
                         .message(ex.getMessage())
                         .path(request.getRequestURI())
                         .build());

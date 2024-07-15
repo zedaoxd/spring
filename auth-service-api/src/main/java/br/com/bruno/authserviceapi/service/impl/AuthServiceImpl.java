@@ -15,10 +15,14 @@ public class AuthServiceImpl {
 
     private final JwtUtils jwtUtils;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final RefreshTokenService refreshTokenService;
 
     @SneakyThrows
     public AuthenticateResponse authenticate(final AuthenticateRequest authenticateRequest) {
         return new JWTAuthenticationImpl(jwtUtils, authenticationConfiguration.getAuthenticationManager())
-                .authenticate(authenticateRequest);
+                .authenticate(authenticateRequest)
+                .withRefreshToken(
+                        refreshTokenService.save(authenticateRequest.email()).getId()
+                );
     }
 }

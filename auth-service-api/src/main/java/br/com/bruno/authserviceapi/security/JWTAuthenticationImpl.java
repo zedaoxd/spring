@@ -31,10 +31,10 @@ public class JWTAuthenticationImpl {
     }
 
     protected AuthenticateResponse buildAuthenticationResponse(final UserDetailsDTO dto) {
-        var token = "Bearer " + jwtUtils.generateToken(dto);
+        var token = jwtUtils.generateToken(dto);
         return AuthenticateResponse.builder()
                 .token(token)
-                .type("JWT")
+                .type("Bearer")
                 .build();
     }
 }

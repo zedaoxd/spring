@@ -10,4 +10,7 @@ server:
 
 jwt:
   secret: 'FA247Wfd05S2PZ1Ecn332AA/lFcDKmOoByaCX6R9qsATqEtvq/PRQGdKz72yjtph7Dy4JglqvIsDzg9x8RY/hxjfTd3iPFrpMeA/qy8uEbw='
-  expiration: 120000
+  expiration:
+    token: 864000 # 10 days
+    refresh-token: 8640000 # 100 days
+
