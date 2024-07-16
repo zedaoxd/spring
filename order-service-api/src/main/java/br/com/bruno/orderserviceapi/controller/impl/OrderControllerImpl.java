@@ -4,8 +4,12 @@ import br.com.bruno.orderserviceapi.controller.OrderController;
 import br.com.bruno.orderserviceapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import models.requests.CreateOrderRequest;
+import models.requests.UpdateOrderRequest;
+import models.responses.OrderResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -19,5 +23,10 @@ public class OrderControllerImpl implements OrderController {
     public ResponseEntity<Void> createOrder(CreateOrderRequest createOrderRequest) {
         orderService.save(createOrderRequest);
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @Override
+    public ResponseEntity<OrderResponse> updateOrder(final UUID id, final UpdateOrderRequest updateOrderRequest) {
+        return ResponseEntity.ok(orderService.update(id, updateOrderRequest));
     }
 }

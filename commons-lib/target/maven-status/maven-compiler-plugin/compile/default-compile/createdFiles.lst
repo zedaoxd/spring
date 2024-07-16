@@ -18,4 +18,5 @@ models\exceptions\ResourceNotFoundException.class
 models\requests\UpdateUserRequest.class
 models\exceptions\ValidationException.class
 models\requests\CreateOrderRequest.class
+models\requests\UpdateOrderRequest.class
 models\exceptions\RefreshTokenExpired.class
