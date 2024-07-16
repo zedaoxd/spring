@@ -13,6 +13,7 @@ import models.exceptions.StandardError;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,6 +78,40 @@ public interface OrderController {
     })
     @GetMapping
     ResponseEntity<List<OrderResponse>> findAll();
+
+    @Operation(summary = "Find all orders with pagination")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Orders found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Page.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class)
+                    )
+            )
+    })
+    @GetMapping("/page")
+    ResponseEntity<Page<OrderResponse>> findAll(
+            @Parameter(description = "Page number", example = "0")
+            @RequestParam(value = "page", defaultValue = "0")
+            final Integer page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(value = "size", defaultValue = "10")
+            final Integer size,
+            @Parameter(description = "Sort field", example = "createdAt")
+            @RequestParam(value = "sort", defaultValue = "createdAt")
+            final String sort,
+            @Parameter(description = "Sort direction", example = "ASC")
+            @RequestParam(value = "direction", defaultValue = "ASC")
+            final String direction);
 
     @Operation(summary = "Create a new order")
     @ApiResponses(value = {

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +29,11 @@ public class OrderControllerImpl implements OrderController {
     @Override
     public ResponseEntity<List<OrderResponse>> findAll() {
         return ResponseEntity.ok(orderService.findAll());
+    }
+
+    @Override
+    public ResponseEntity<Page<OrderResponse>> findAll(Integer page, Integer size, String sort, String direction) {
+        return ResponseEntity.ok(orderService.findAll(page, size, sort, direction));
     }
 
     @Override
