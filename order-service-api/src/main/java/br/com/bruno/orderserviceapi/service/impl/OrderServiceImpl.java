@@ -55,6 +55,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse update(final UUID id, final UpdateOrderRequest updateOrderRequest) {
+        validateUsers(updateOrderRequest);
+        
         Order entity = find(id);
 
         entity = orderMapper.fromRequest(entity, updateOrderRequest);
@@ -65,6 +67,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void delete(UUID id) {
         orderRepository.delete(find(id));
+    }
+
+    private void validateUsers(UpdateOrderRequest updateOrderRequest) {
+        if (updateOrderRequest.customerId() != null)
+            validateUserId(updateOrderRequest.customerId());
+
+        if (updateOrderRequest.requesterId() != null)
+            validateUserId(updateOrderRequest.requesterId());
     }
 
     private Order find(final UUID id) {
