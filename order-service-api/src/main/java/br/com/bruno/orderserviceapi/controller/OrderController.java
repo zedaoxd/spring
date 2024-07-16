@@ -2,6 +2,7 @@ package br.com.bruno.orderserviceapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +16,7 @@ import models.responses.OrderResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "OrderController", description = "Controller responsible for managing orders")
@@ -53,6 +55,28 @@ public interface OrderController {
             @Parameter(description = "Order ID", required = true, example = "43f39365-d172-420d-99fa-54d8f587321b")
             @PathVariable("id")
             final UUID id);
+
+    @Operation(summary = "Find all orders")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Orders found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = OrderResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class)
+                    )
+            )
+    })
+    @GetMapping
+    ResponseEntity<List<OrderResponse>> findAll();
 
     @Operation(summary = "Create a new order")
     @ApiResponses(value = {

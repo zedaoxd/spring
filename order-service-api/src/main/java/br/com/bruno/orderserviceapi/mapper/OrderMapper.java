@@ -10,6 +10,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
+import java.util.List;
+
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 import static org.mapstruct.NullValueCheckStrategy.ALWAYS;
 
@@ -41,4 +43,5 @@ public interface OrderMapper {
         return OrderStatusEnum.toEnum(status);
     }
 
+    List<OrderResponse> fromEntities(Iterable<Order> orders);
 }

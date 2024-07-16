@@ -11,6 +11,7 @@ import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,6 +24,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse findById(final UUID id) {
         return orderMapper.fromEntity(find(id));
+    }
+
+    @Override
+    public List<OrderResponse> findAll() {
+        return orderMapper.fromEntities(orderRepository.findAll());
     }
 
     @Override
