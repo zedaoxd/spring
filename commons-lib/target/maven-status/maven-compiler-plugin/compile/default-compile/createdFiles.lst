@@ -6,6 +6,7 @@ models\enums\OrderStatusEnum.class
 models\requests\AuthenticateRequest.class
 models\exceptions\StandardError$StandardErrorBuilder.class
 models\responses\OrderResponse.class
+models\exceptions\GenericFeignException.class
 models\exceptions\ValidationException$FieldError.class
 models\responses\UserResponse.class
 models\requests\RefreshTokenRequest.class

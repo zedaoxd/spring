@@ -1,14 +1,17 @@
 package br.com.bruno.orderserviceapi.service.impl;
 
+import br.com.bruno.orderserviceapi.clients.UserServiceFeignClient;
 import br.com.bruno.orderserviceapi.entity.Order;
 import br.com.bruno.orderserviceapi.mapper.OrderMapper;
 import br.com.bruno.orderserviceapi.repository.OrderRepository;
 import br.com.bruno.orderserviceapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
+import models.responses.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,12 +20,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final UserServiceFeignClient userServiceFeignClient;
 
     @Override
     public OrderResponse findById(final UUID id) {
@@ -43,6 +48,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void save(CreateOrderRequest createOrderRequest) {
+        final var customer = validateUserId(createOrderRequest.customerId());
+        final var requester = validateUserId(createOrderRequest.requesterId());
         orderRepository.save(orderMapper.fromRequest(createOrderRequest));
     }
 
@@ -66,5 +73,9 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Order not found. Id: " + id + ", Type: " + Order.class.getSimpleName()
                 ));
+    }
+
+    private UserResponse validateUserId(final String userId) {
+        return userServiceFeignClient.findById(userId).getBody();
     }
 }
