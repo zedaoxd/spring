@@ -21,6 +21,39 @@ import java.util.UUID;
 @RequestMapping("/orders")
 public interface OrderController {
 
+    @Operation(summary = "Find an order by ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Order found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = OrderResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Order not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class)
+                    )
+            )
+    })
+    @GetMapping("/{id}")
+    ResponseEntity<OrderResponse> findById(
+            @Parameter(description = "Order ID", required = true, example = "43f39365-d172-420d-99fa-54d8f587321b")
+            @PathVariable("id")
+            final UUID id);
+
     @Operation(summary = "Create a new order")
     @ApiResponses(value = {
             @ApiResponse(

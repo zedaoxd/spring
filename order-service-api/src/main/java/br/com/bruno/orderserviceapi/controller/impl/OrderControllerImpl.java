@@ -20,6 +20,11 @@ public class OrderControllerImpl implements OrderController {
     private final OrderService orderService;
 
     @Override
+    public ResponseEntity<OrderResponse> findById(UUID id) {
+        return ResponseEntity.ok(orderService.findById(id));
+    }
+
+    @Override
     public ResponseEntity<Void> createOrder(CreateOrderRequest createOrderRequest) {
         orderService.save(createOrderRequest);
         return ResponseEntity.status(CREATED).build();

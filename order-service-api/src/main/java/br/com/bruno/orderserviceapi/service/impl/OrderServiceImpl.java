@@ -21,12 +21,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
 
     @Override
-    public Order findById(final UUID id) {
-        return orderRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Order not found. Id: " + id + ", Type: " + Order.class.getSimpleName()
-                ));
+    public OrderResponse findById(final UUID id) {
+        return orderMapper.fromEntity(find(id));
     }
 
     @Override
@@ -36,10 +32,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse update(final UUID id, final UpdateOrderRequest updateOrderRequest) {
-        Order entity = findById(id);
+        Order entity = find(id);
 
         entity = orderMapper.fromRequest(entity, updateOrderRequest);
 
         return orderMapper.fromEntity(orderRepository.save(entity));
+    }
+
+    private Order find(final UUID id) {
+        return orderRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Order not found. Id: " + id + ", Type: " + Order.class.getSimpleName()
+                ));
     }
 }

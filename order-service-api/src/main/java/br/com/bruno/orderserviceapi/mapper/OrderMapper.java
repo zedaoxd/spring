@@ -31,7 +31,7 @@ public interface OrderMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "status", source = "updateOrderRequest.status", qualifiedByName = "mapStatus")
-    @Mapping(target = "closedAt", expression = "java(updateOrderRequest.status().equals(models.enums.OrderStatusEnum.CLOSED.getDescription()) ? java.time.LocalDateTime.now() : null)")
+    @Mapping(target = "closedAt", expression = "java(updateOrderRequest.status() != null && updateOrderRequest.status().equals(models.enums.OrderStatusEnum.CLOSED.getDescription()) ? java.time.LocalDateTime.now() : null)")
     Order fromRequest(@MappingTarget Order entity, UpdateOrderRequest updateOrderRequest);
 
     OrderResponse fromEntity(Order save);
