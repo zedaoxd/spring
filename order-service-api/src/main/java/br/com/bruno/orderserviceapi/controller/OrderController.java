@@ -56,11 +56,7 @@ public interface OrderController {
 
     @Operation(summary = "Create a new order")
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Order created",
-                    content = @Content(mediaType = "application/json")
-            ),
+            @ApiResponse(responseCode = "201", description = "Order created"),
             @ApiResponse(
                     responseCode = "400",
                     description = "Bad request",
@@ -133,4 +129,30 @@ public interface OrderController {
             @Valid
             @RequestBody
             final UpdateOrderRequest updateOrderRequest);
+
+    @Operation(summary = "Delete an existing order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Order deleted"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class)
+                    )
+            )
+    })
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteOrder(
+            @Parameter(description = "Order ID", required = true, example = "43f39365-d172-420d-99fa-54d8f587321b")
+            @PathVariable("id")
+            final UUID id);
 }

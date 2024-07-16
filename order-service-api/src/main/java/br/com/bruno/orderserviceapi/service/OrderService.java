@@ -13,4 +13,5 @@ public interface OrderService {
 
     OrderResponse update(final UUID id, final UpdateOrderRequest updateOrderRequest);
 
+    void delete(final UUID id);
 }

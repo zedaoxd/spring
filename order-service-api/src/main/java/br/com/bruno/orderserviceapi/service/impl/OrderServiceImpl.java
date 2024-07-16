@@ -39,6 +39,11 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.fromEntity(orderRepository.save(entity));
     }
 
+    @Override
+    public void delete(UUID id) {
+        orderRepository.delete(find(id));
+    }
+
     private Order find(final UUID id) {
         return orderRepository
                 .findById(id)
