@@ -15,3 +15,4 @@ C:\Codes\spring\commons-lib\src\main\java\models\enums\OrderStatusEnum.java
 C:\Codes\spring\commons-lib\src\main\java\models\exceptions\GenericFeignException.java
 C:\Codes\spring\commons-lib\src\main\java\models\exceptions\RefreshTokenExpired.java
 C:\Codes\spring\commons-lib\src\main\java\models\responses\OrderResponse.java
+C:\Codes\spring\commons-lib\src\main\java\models\dtos\OrderCreatedMessage.java
