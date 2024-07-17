@@ -4,3 +4,12 @@ spring:
   cloud:
     config:
       uri: ${CONFIG_SERVER_URI:http://localhost:8888}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:user}
+    password: ${RABBITMQ_PASSWORD:password}
+    connection-timeout: 10000
+    template:
+      exchange: 'helpdesk'
+      routing-key: 'rk.orders.create'

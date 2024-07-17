@@ -7,11 +7,13 @@ import br.com.bruno.orderserviceapi.repository.OrderRepository;
 import br.com.bruno.orderserviceapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import models.dtos.OrderCreatedMessage;
 import models.exceptions.ResourceNotFoundException;
 import models.requests.CreateOrderRequest;
 import models.requests.UpdateOrderRequest;
 import models.responses.OrderResponse;
 import models.responses.UserResponse;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final UserServiceFeignClient userServiceFeignClient;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public OrderResponse findById(final UUID id) {
@@ -50,7 +53,15 @@ public class OrderServiceImpl implements OrderService {
     public void save(CreateOrderRequest createOrderRequest) {
         final var customer = validateUserId(createOrderRequest.customerId());
         final var requester = validateUserId(createOrderRequest.requesterId());
-        orderRepository.save(orderMapper.fromRequest(createOrderRequest));
+        final var entity = orderRepository.save(orderMapper.fromRequest(createOrderRequest));
+
+        rabbitTemplate.convertAndSend(
+                OrderCreatedMessage.builder()
+                    .order(orderMapper.fromEntity(entity))
+                    .customer(customer)
+                    .requester(requester)
+                .build()
+        );
     }
 
     @Override

@@ -1,5 +1,8 @@
 package models.responses;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 public record OrderResponse(
         String id,
         String requesterId,
@@ -10,5 +13,7 @@ public record OrderResponse(
         String createdAt,
         String updatedAt,
         String closedAt
-) {
+) implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 }
