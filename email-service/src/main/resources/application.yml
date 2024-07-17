@@ -1,3 +1,16 @@
 spring:
   application:
     name: 'email-service'
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:user}
+    password: ${RABBITMQ_PASSWORD:password}
+    connection-timeout: 10000
+    exchange:
+      order: ${RABBITMQ_EXCHANGE_EMAIL:helpdesk}
+      type: 'topic'
+    queue:
+      order-created: ${RABBITMQ_QUEUE_EMAIL_ORDER_CREATED:queue.orders}
+    routing-key:
+        order-created: ${RABBITMQ_ROUTING_KEY_EMAIL_ORDER_CREATED:rk.orders.create}
