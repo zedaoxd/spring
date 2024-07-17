@@ -14,3 +14,21 @@ spring:
       order-created: ${RABBITMQ_QUEUE_EMAIL_ORDER_CREATED:queue.orders}
     routing-key:
         order-created: ${RABBITMQ_ROUTING_KEY_EMAIL_ORDER_CREATED:rk.orders.create}
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    protocol: ${MAIL_PROTOCOL:smtp}
+    text-created-order-confirmation: |
+        Hello %s,
+      
+        Your order has been created successfully.
+        
+        Order Details:
+        ID: %s
+        Title: %s
+        Description: %s
+        Date: %s
+        Status: %s
+        Technician: %s

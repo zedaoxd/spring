@@ -1,4 +1,4 @@
-package br.com.bruno.emailservice.config;
+package br.com.bruno.emailservice.configs;
 
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.context.annotation.Bean;
