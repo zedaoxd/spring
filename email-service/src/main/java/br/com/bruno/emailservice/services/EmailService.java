@@ -1,13 +1,16 @@
 package br.com.bruno.emailservice.services;
 
+import br.com.bruno.emailservice.models.enums.OperationEnum;
+import br.com.bruno.emailservice.utils.EmailUtils;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.dtos.OrderCreatedMessage;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Service
 @Slf4j
@@ -15,49 +18,37 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
 
-    @Value("${spring.mail.text-created-order-confirmation}")
-    private String textCreatedOrderConfirmation;
+    public void sendHtmlMail(final OrderCreatedMessage orderCreatedMessage, OperationEnum operation) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
 
-    public void sendMail(final OrderCreatedMessage orderCreatedMessage) {
-        log.info("Sending email to: {}", orderCreatedMessage.getCustomer().email());
+        String process = getContext(orderCreatedMessage, operation);
 
-        SimpleMailMessage mailMessage = getSimpleMailMessage(orderCreatedMessage);
+        EmailUtils.getMimeMessage(message, process, orderCreatedMessage, operation.getOperation());
 
-        try {
-            mailSender.send(mailMessage);
-            log.info("Email sent successfully to: {}", orderCreatedMessage.getCustomer().email());
-        } catch (MailException e) {
-            switch (e.getClass().getSimpleName()) {
-                case "MailAuthenticationException":
-                    log.error("Error sending email: Authentication failed");
-                    break;
-                case "MailSendException":
-                    log.error("Error sending email: Connection refused\n: {}", e.getMessage());
-                    break;
-                default:
-                    log.error("Error sending email: {}", e.getMessage());
-                    break;
-            }
-        }
+        mailSender.send(message);
     }
 
-    private SimpleMailMessage getSimpleMailMessage(OrderCreatedMessage orderCreatedMessage) {
-        String subject = "Order created";
-        String text = String.format(textCreatedOrderConfirmation,
-                orderCreatedMessage.getCustomer().name(),
-                orderCreatedMessage.getOrder().id(),
-                orderCreatedMessage.getOrder().title(),
-                orderCreatedMessage.getOrder().description(),
-                orderCreatedMessage.getOrder().createdAt(),
-                orderCreatedMessage.getOrder().status(),
-                orderCreatedMessage.getRequester().name());
+    private String getContext(OrderCreatedMessage orderDTO, OperationEnum operation) {
+        Context context = new Context();
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setSubject(subject);
-        mailMessage.setTo(orderCreatedMessage.getCustomer().email());
-        mailMessage.setText(text);
-
-        return mailMessage;
+        return switch (operation) {
+            case ORDER_CREATED -> {
+                log.info("Enviando email de criação de ordem de serviço");
+                context = EmailUtils.getContextToCreatedOrder(orderDTO);
+                yield templateEngine.process("email/order-created", context);
+            }
+            case ORDER_UPDATED -> {
+                log.info("Enviando email de atualização de ordem de serviço");
+                // context = EmailUtils.getContextToUpdatedOrder(orderDTO);
+                yield templateEngine.process("email/order-updated", context);
+            }
+            case ORDER_DELETED -> {
+                log.info("Enviando email de exclusão de ordem de serviço");
+                // context = EmailUtils.getContextToDeletedOrder(orderDTO);
+                yield templateEngine.process("email/order-deleted", context);
+            }
+        };
     }
 }

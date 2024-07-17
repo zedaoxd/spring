@@ -20,15 +20,3 @@ spring:
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     protocol: ${MAIL_PROTOCOL:smtp}
-    text-created-order-confirmation: |
-        Hello %s,
-      
-        Your order has been created successfully.
-        
-        Order Details:
-        ID: %s
-        Title: %s
-        Description: %s
-        Date: %s
-        Status: %s
-        Technician: %s

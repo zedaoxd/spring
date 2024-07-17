@@ -1,6 +1,8 @@
 package br.com.bruno.emailservice.listners;
 
+import br.com.bruno.emailservice.models.enums.OperationEnum;
 import br.com.bruno.emailservice.services.EmailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.dtos.OrderCreatedMessage;
@@ -22,8 +24,8 @@ public class OrderListener {
             exchange = @Exchange(value = "${spring.rabbitmq.exchange.order}", type = "${spring.rabbitmq.exchange.type}"),
             key = "${spring.rabbitmq.routing-key.order-created}"
     ))
-    public void listener(final OrderCreatedMessage orderCreatedMessage) {
+    public void listener(final OrderCreatedMessage orderCreatedMessage) throws MessagingException {
         log.info("Order created message received: {}", orderCreatedMessage);
-        emailService.sendMail(orderCreatedMessage);
+        emailService.sendHtmlMail(orderCreatedMessage, OperationEnum.ORDER_CREATED);
     }
 }
