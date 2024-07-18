@@ -10,6 +10,14 @@ spring:
   cloud:
     config:
       uri: 'config-server'
+springdoc:
+  openapi:
+    title: 'BFF API'
+    description: 'Component responsible for aggregating the microservices and exposing a single endpoint.'
+    version: '1.0.0'
+    contact:
+      name: 'Bruno Lessa'
+      email: 'brunolessamaxx28@gmail.com'
 eureka:
   client:
     service-url:
